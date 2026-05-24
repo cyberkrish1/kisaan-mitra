@@ -6,28 +6,21 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 import json, io, os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 app = Flask(__name__)
 CORS(app)   # allows your HTML frontend to call this API
 
 # ── Load model once at startup ──────────────────────────
-MODEL_PATH      = "model/plant_model.h5"
-CLASS_NAMES_PATH = "model/class_names.json"
+MODEL_PATH      = "../model/plant_model.h5"
+CLASS_NAMES_PATH = "../model/class_names.json"
 
 print("Loading model...")
-try:
-    model = tf.keras.models.load_model(MODEL_PATH)
-    with open(CLASS_NAMES_PATH, "r") as f:
-        class_names = json.load(f)
-    print(f"✓ Model loaded. {len(class_names)} classes available.")
-except Exception as e:
-    print(f"✗ Error loading model: {e}")
-    model = None
-    class_names = {}
+model = tf.keras.models.load_model(MODEL_PATH)
 
+with open(CLASS_NAMES_PATH, "r") as f:
+    class_names = json.load(f)   # { "0": "Apple___Apple_scab", "1": "Apple___Black_rot", ... }
+
+print(f"Model loaded. {len(class_names)} classes available.")
 # ───────────────────────────────────────────────────────
 
 # Disease treatment info — add more as needed
@@ -62,18 +55,10 @@ def get_treatment(class_name):
 
 @app.route("/", methods=["GET"])
 def home():
-    return jsonify({
-        "message": "Plant Disease Detection API is running",
-        "classes": len(class_names),
-        "status": "healthy" if model else "model_not_loaded"
-    })
+    return jsonify({"message": "Plant Disease Detection API is running", "classes": len(class_names)})
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    # Check if model is loaded
-    if model is None:
-        return jsonify({"error": "Model not loaded. Please check server logs."}), 503
-    
     # Check image was sent
     if "image" not in request.files:
         return jsonify({"error": "No image file provided. Send image as form-data with key 'image'."}), 400
@@ -125,5 +110,4 @@ def predict():
         return jsonify({"error": f"Prediction failed: {str(e)}"}), 500
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(debug=False, host="0.0.0.0", port=port)
+    app.run(debug=True, host="0.0.0.0", port=5000)
