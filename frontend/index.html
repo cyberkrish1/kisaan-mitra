@@ -7,7 +7,7 @@
   <meta name="description" content="AI-powered plant disease detection app. Upload a plant image to detect diseases instantly.">
   <meta name="theme-color" content="#1D9E75">
   <title>Kisaan Mitra - AI Plant Disease Detection</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6usKNU8gohLG+Z2NXcXQ0Tz+WaIKDpI0fH+EqoiPE22Go5StwlDYmo4ChYbtMSw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6usKNU8gohLG+Z2NXcXQ0Tz+WaIKDpI0fH+EqoiPE22Go5Stw[...]" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -63,14 +63,21 @@
   <section class="hero" id="home">
     <div class="hero-content">
       <div class="hero-text">
-        <h2>Detect Plant Diseases Instantly</h2>
-        <p>Powered by AI • Real-time Analysis • Expert Guidance</p>
+        <h2 class="hero-title">Detect Plant Diseases Instantly</h2>
+        <p class="hero-subtitle">Powered by AI • Real-time Analysis • Expert Guidance</p>
         <button class="btn-primary btn-lg" onclick="scrollToAnalyze()" aria-label="Scroll to analyze section">
           <i class="fas fa-arrow-down"></i> Start Analysis
         </button>
       </div>
-      <div class="hero-illustration">
-        <i class="fas fa-leaf"></i>
+      <div class="hero-animation-container">
+        <div class="animated-video-wrapper">
+          <video class="hero-video" autoplay muted loop playsinline aria-label="Plant disease detection demonstration video">
+            <source src="create_a_animated_vodeo_which.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <div class="video-overlay"></div>
+          <div class="video-pulse"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -96,7 +103,7 @@
         </div>
         <div class="feature-card">
           <div class="feature-icon">
-            <i class="fas fa-hand-holding-leaf"></i>
+            <i class="fas fa-capsules"></i>
           </div>
           <h3>Treatment Guide</h3>
           <p>Receive expert treatment recommendations immediately</p>
