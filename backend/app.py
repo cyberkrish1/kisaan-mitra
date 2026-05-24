@@ -11,9 +11,8 @@ app = Flask(__name__)
 CORS(app)   # allows your HTML frontend to call this API
 
 # ── Load model once at startup ──────────────────────────
-MODEL_PATH      = "../model/plant_model.h5"
-CLASS_NAMES_PATH = "../model/class_names.json"
-
+MODEL_PATH = "plant_model.h5"
+CLASS_NAMES_PATH = "class_names.json"
 print("Loading model...")
 model = tf.keras.models.load_model(MODEL_PATH)
 
@@ -110,4 +109,5 @@ def predict():
         return jsonify({"error": f"Prediction failed: {str(e)}"}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
