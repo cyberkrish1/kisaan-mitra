@@ -450,9 +450,6 @@ function debounce(func, wait) {
   };
 }
 
-// Apply debounce to filter updates
-const debouncedFilterUpdate = debounce(updateImageFilters, 100);
-
 // ===== Accessibility Helpers =====
 // Announce to screen readers
 function announceToScreenReader(message) {
@@ -469,5 +466,5 @@ function announceToScreenReader(message) {
 }
 
 // Log version and ready message
-console.log("%cKisaan Mitra v1.0", "color: #1D9E75; font-size: 16px; font-weight: bold;");
-console.log("%cPlant Disease Detection AI", "color: #666; font-size: 12px;");
+console.log("%cKisaan Mitra v2.0", "color: #1D9E75; font-size: 16px; font-weight: bold;");
+console.log("%cPlant Disease Detection AI - Enhanced Version", "color: #666; font-size: 12px;");
