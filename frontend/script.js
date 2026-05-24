@@ -1,6 +1,6 @@
 // frontend/script.js
 
-const API_URL = "http://localhost:5000/predict";
+const API_URL = "https://kisaan-mitra-api.onrender.com/predict";
 let selectedFile = null;
 let previousResults = [];
 
