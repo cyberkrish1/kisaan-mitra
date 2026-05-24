@@ -1,335 +1,37 @@
-<!-- frontend/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AI-powered plant disease detection app. Upload a plant image to detect diseases instantly.">
-  <meta name="theme-color" content="#1D9E75">
-  <title>Kisaan Mitra - AI Plant Disease Detection</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6usKNU8gohLG+Z2NXcXQ0Tz+WaIKDpI0fH+EqoiPE22Go5Stw[...]" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kisaan Mitra - Plant Disease Detection</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Navigation Header -->
-  <header class="navbar">
-    <div class="navbar-container">
-      <div class="logo-section">
-        <i class="fas fa-leaf logo-icon"></i>
-        <div>
-          <h1 class="logo">Kisaan Mitra</h1>
-          <p class="logo-subtitle">Smart Agriculture</p>
+    <div class="container">
+        <h1>🌾 Kisaan Mitra</h1>
+        <p class="subtitle">Plant Disease Detection using AI</p>
+        
+        <div class="upload-section">
+            <input type="file" id="imageInput" accept="image/*" />
+            <button onclick="uploadImage()">Analyze Plant</button>
         </div>
-      </div>
-      <nav class="nav-links" aria-label="Main navigation">
-        <button class="nav-link" data-section="home" aria-current="page">
-          <i class="fas fa-home"></i> Home
-        </button>
-        <button class="nav-link" data-section="features">
-          <i class="fas fa-star"></i> Features
-        </button>
-        <button class="nav-link" data-section="about">
-          <i class="fas fa-info-circle"></i> About
-        </button>
-        <button class="nav-link" data-section="contact">
-          <i class="fas fa-envelope"></i> Contact
-        </button>
-      </nav>
-      <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+
+        <div id="loading" class="loading" style="display:none;">
+            <p>🔄 Analyzing your plant image...</p>
+        </div>
+
+        <div id="result" class="result" style="display:none;">
+            <h2 id="plantName"></h2>
+            <p id="diseaseName"></p>
+            <p id="confidence"></p>
+            <div id="treatment"></div>
+            <h3>Other Possibilities:</h3>
+            <div id="top3"></div>
+        </div>
+
+        <div id="error" class="error" style="display:none;"></div>
     </div>
-  </header>
 
-  <!-- Mobile Navigation Menu -->
-  <nav class="mobile-menu" id="mobile-menu" aria-hidden="true">
-    <button class="mobile-nav-link" data-section="home">
-      <i class="fas fa-home"></i> Home
-    </button>
-    <button class="mobile-nav-link" data-section="features">
-      <i class="fas fa-star"></i> Features
-    </button>
-    <button class="mobile-nav-link" data-section="about">
-      <i class="fas fa-info-circle"></i> About
-    </button>
-    <button class="mobile-nav-link" data-section="contact">
-      <i class="fas fa-envelope"></i> Contact
-    </button>
-  </nav>
-
-  <!-- Hero Section -->
-  <section class="hero" id="home">
-    <div class="hero-content">
-      <div class="hero-text">
-        <h2 class="hero-title">Detect Plant Diseases Instantly</h2>
-        <p class="hero-subtitle">Powered by AI • Real-time Analysis • Expert Guidance</p>
-        <button class="btn-primary btn-lg" onclick="scrollToAnalyze()" aria-label="Scroll to analyze section">
-          <i class="fas fa-arrow-down"></i> Start Analysis
-        </button>
-      </div>
-      <div class="hero-animation-container">
-        <div class="animated-video-wrapper">
-          <video class="hero-video" autoplay muted loop playsinline aria-label="Plant disease detection demonstration video">
-            <source src="create_a_animated_vodeo_which.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-          <div class="video-overlay"></div>
-          <div class="video-pulse"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <main class="main-content">
-    <!-- Features Section -->
-    <section class="features-section" id="features" aria-labelledby="features-title">
-      <h2 id="features-title">Why Choose Kisaan Mitra?</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-brain"></i>
-          </div>
-          <h3>AI Powered</h3>
-          <p>Advanced MobileNetV2 & TensorFlow model for accurate detection</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-bolt"></i>
-          </div>
-          <h3>Real-Time</h3>
-          <p>Get instant results without waiting or complex setup</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-capsules"></i>
-          </div>
-          <h3>Treatment Guide</h3>
-          <p>Receive expert treatment recommendations immediately</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-mobile-alt"></i>
-          </div>
-          <h3>Mobile Ready</h3>
-          <p>Use on any device - desktop, tablet, or smartphone</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Main Analyzer Section -->
-    <section class="analyzer-section" id="analyzer">
-      <div class="analyzer-container">
-        <!-- Upload area -->
-        <div class="upload-card" id="upload-area" role="region" aria-labelledby="upload-title">
-          <div class="upload-icon">
-            <i class="fas fa-image"></i>
-          </div>
-          <h3 id="upload-title" class="upload-title">Drop Your Plant Image Here</h3>
-          <p class="upload-sub">or click to browse (JPG, PNG, WebP)</p>
-          <input type="file" id="file-input" accept="image/*" hidden aria-label="Select plant image">
-          <button class="btn-primary" onclick="document.getElementById('file-input').click()" aria-label="Open file browser to select plant image">
-            <i class="fas fa-folder-open"></i> Choose Image
-          </button>
-          <p class="upload-hint">Max file size: 10MB</p>
-        </div>
-
-        <!-- Preview with image filters -->
-        <div class="preview-section" id="preview-section" style="display:none" role="region" aria-labelledby="preview-title">
-          <h3 id="preview-title" class="preview-title">Image Preview</h3>
-          <div class="preview-container">
-            <img id="preview-img" alt="Plant image preview" loading="lazy">
-            <div class="filter-controls">
-              <label for="brightness-slider" class="filter-label">
-                <i class="fas fa-sun"></i> Brightness
-              </label>
-              <input type="range" id="brightness-slider" min="50" max="150" value="100" aria-label="Adjust image brightness">
-              <span id="brightness-value">100%</span>
-
-              <label for="contrast-slider" class="filter-label">
-                <i class="fas fa-adjust"></i> Contrast
-              </label>
-              <input type="range" id="contrast-slider" min="50" max="150" value="100" aria-label="Adjust image contrast">
-              <span id="contrast-value">100%</span>
-            </div>
-          </div>
-          <div class="btn-row">
-            <button class="btn-secondary" onclick="resetApp()" aria-label="Choose another image">
-              <i class="fas fa-arrow-left"></i> Choose Another
-            </button>
-            <button class="btn-primary" id="analyze-btn" onclick="analyzeImage()" aria-label="Analyze the selected plant image">
-              <i class="fas fa-magic"></i> Analyze Plant
-            </button>
-          </div>
-        </div>
-
-        <!-- Loading -->
-        <div class="loading" id="loading" style="display:none" role="status" aria-live="polite" aria-label="Loading">
-          <div class="spinner"></div>
-          <p>Analyzing your plant...</p>
-          <div class="loading-progress">
-            <div class="progress-bar"></div>
-          </div>
-        </div>
-
-        <!-- Error -->
-        <div class="error-box" id="error-box" style="display:none" role="alert" aria-live="assertive">
-          <div class="error-content">
-            <i class="fas fa-exclamation-circle"></i>
-            <span id="error-message"></span>
-          </div>
-          <button class="error-close" onclick="document.getElementById('error-box').style.display='none'" aria-label="Close error message">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-
-        <!-- Results -->
-        <div class="result-card" id="result-card" style="display:none" role="region" aria-labelledby="result-title">
-          <div class="result-header" id="result-header">
-            <div>
-              <h2 id="result-disease" id="result-title"></h2>
-              <p id="result-plant"></p>
-            </div>
-            <div class="confidence-badge" id="confidence-badge" role="img" aria-label="Confidence score"></div>
-          </div>
-
-          <div class="result-body">
-            <div class="info-row">
-              <span class="label">Status</span>
-              <span class="status-tag" id="status-tag"></span>
-            </div>
-
-            <div class="info-row">
-              <span class="label">Treatment & Prevention</span>
-              <p id="result-treatment"></p>
-            </div>
-
-            <div class="top3-section">
-              <p class="label">Top Predictions</p>
-              <div id="top3-list"></div>
-            </div>
-
-            <div class="result-actions">
-              <button class="btn-secondary" onclick="downloadResult()" aria-label="Download results as text file">
-                <i class="fas fa-download"></i> Download Report
-              </button>
-              <button class="btn-secondary" onclick="shareResult()" aria-label="Share results on social media">
-                <i class="fas fa-share-alt"></i> Share Results
-              </button>
-            </div>
-          </div>
-
-          <button class="btn-primary full-width" onclick="resetApp()" aria-label="Analyze another plant">
-            <i class="fas fa-redo"></i> Analyze Another Plant
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="about-section" id="about" aria-labelledby="about-title">
-      <h2 id="about-title">About Kisaan Mitra</h2>
-      <div class="about-content">
-        <div class="about-text">
-          <p>Kisaan Mitra is an AI-powered plant disease detection system designed to help farmers and gardeners identify crop diseases quickly and accurately.</p>
-          <p>Built using state-of-the-art deep learning models (MobileNetV2 + TensorFlow), our application provides instant disease diagnosis and treatment recommendations.</p>
-          <ul class="about-list">
-            <li><i class="fas fa-check"></i> Supports multiple plant species</li>
-            <li><i class="fas fa-check"></i> Provides accurate disease identification</li>
-            <li><i class="fas fa-check"></i> Suggests preventive measures</li>
-            <li><i class="fas fa-check"></i> 100% free and open-source</li>
-          </ul>
-        </div>
-        <div class="about-stats">
-          <div class="stat-box">
-            <h3>98%</h3>
-            <p>Accuracy Rate</p>
-          </div>
-          <div class="stat-box">
-            <h3>38</h3>
-            <p>Disease Types</p>
-          </div>
-          <div class="stat-box">
-            <h3>4</h3>
-            <p>Plant Categories</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact-section" id="contact" aria-labelledby="contact-title">
-      <h2 id="contact-title">Get In Touch</h2>
-      <form class="contact-form" id="contact-form" aria-label="Contact form">
-        <div class="form-group">
-          <label for="contact-name">Name <span aria-label="required">*</span></label>
-          <input type="text" id="contact-name" name="name" required aria-required="true" placeholder="Your name">
-        </div>
-        <div class="form-group">
-          <label for="contact-email">Email <span aria-label="required">*</span></label>
-          <input type="email" id="contact-email" name="email" required aria-required="true" placeholder="your@email.com">
-        </div>
-        <div class="form-group">
-          <label for="contact-message">Message <span aria-label="required">*</span></label>
-          <textarea id="contact-message" name="message" rows="5" required aria-required="true" placeholder="Your message..."></textarea>
-        </div>
-        <button type="submit" class="btn-primary" aria-label="Send your message">
-          <i class="fas fa-paper-plane"></i> Send Message
-        </button>
-      </form>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-section">
-        <h3>Kisaan Mitra</h3>
-        <p>AI-powered plant disease detection for smarter agriculture</p>
-        <div class="social-links">
-          <a href="#" aria-label="Follow on GitHub" title="GitHub">
-            <i class="fab fa-github"></i>
-          </a>
-          <a href="#" aria-label="Follow on Twitter" title="Twitter">
-            <i class="fab fa-twitter"></i>
-          </a>
-          <a href="#" aria-label="Follow on LinkedIn" title="LinkedIn">
-            <i class="fab fa-linkedin"></i>
-          </a>
-          <a href="#" aria-label="Follow on Facebook" title="Facebook">
-            <i class="fab fa-facebook"></i>
-          </a>
-        </div>
-      </div>
-      <div class="footer-section">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="#home">Home</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </div>
-      <div class="footer-section">
-        <h4>Information</h4>
-        <ul>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">FAQ</a></li>
-          <li><a href="#">Documentation</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 Kisaan Mitra. All rights reserved. | Built with <i class="fas fa-heart" style="color: #e74c3c;"></i> for farmers</p>
-      <p class="tech-stack">Powered by MobileNetV2 + TensorFlow + Modern Web Technologies</p>
-    </div>
-  </footer>
-
-  <!-- Skip to main content link for accessibility -->
-  <a href="#main-content" class="skip-link">Skip to main content</a>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
