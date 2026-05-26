@@ -13,8 +13,18 @@ CORS(app)   # allows your HTML frontend to call this API
 # ── Load model once at startup ──────────────────────────
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-MODEL_PATH = os.path.join(BASE_DIR, "..", "model", "plant_model.h5")
-CLASS_NAMES_PATH = os.path.join(BASE_DIR, "..", "model", "class_names.json")
+MODEL_PATH = os.path.abspath(
+    os.path.join(BASE_DIR, "..", "model", "plant_model.h5")
+)
+
+CLASS_NAMES_PATH = os.path.abspath(
+    os.path.join(BASE_DIR, "..", "model", "class_names.json")
+)
+
+print("MODEL PATH:", MODEL_PATH)
+print("CLASS PATH:", CLASS_NAMES_PATH)
+print("MODEL EXISTS:", os.path.exists(MODEL_PATH))
+print("CLASS EXISTS:", os.path.exists(CLASS_NAMES_PATH))
 
 print("Loading model...")
 model = tf.keras.models.load_model(MODEL_PATH)
@@ -112,4 +122,4 @@ def predict():
         return jsonify({"error": f"Prediction failed: {str(e)}"}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000)
