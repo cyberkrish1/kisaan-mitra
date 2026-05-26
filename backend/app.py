@@ -7,32 +7,39 @@ import json
 import io
 import os
 
-# Reduce TensorFlow logs
+# =========================================================
+# REDUCE TENSORFLOW LOGS
+# =========================================================
+
 tf.get_logger().setLevel('ERROR')
+
+# =========================================================
+# FLASK APP
+# =========================================================
 
 app = Flask(__name__)
 CORS(app)
 
 # =========================================================
-# PATH SETUP
+# PATHS
 # =========================================================
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 MODEL_PATH = os.path.abspath(
-    os.path.join(BASE_DIR, "..", "model", "plant_model.h5")
+    os.path.join(BASE_DIR, "..", "model", "plant_model.keras")
 )
 
 CLASS_NAMES_PATH = os.path.abspath(
     os.path.join(BASE_DIR, "..", "model", "class_names.json")
 )
 
-print("===================================")
+print("\n========== FILE CHECK ==========")
 print("MODEL PATH:", MODEL_PATH)
 print("CLASS PATH:", CLASS_NAMES_PATH)
 print("MODEL EXISTS:", os.path.exists(MODEL_PATH))
 print("CLASS EXISTS:", os.path.exists(CLASS_NAMES_PATH))
-print("===================================")
+print("================================\n")
 
 # =========================================================
 # LOAD MODEL
@@ -49,7 +56,7 @@ try:
     print("✅ Model loaded successfully!")
 
 except Exception as e:
-    print("❌ ERROR LOADING MODEL:", str(e))
+    print("❌ MODEL LOAD ERROR:", str(e))
     raise e
 
 # =========================================================
@@ -63,11 +70,11 @@ try:
     print(f"✅ Loaded {len(class_names)} classes")
 
 except Exception as e:
-    print("❌ ERROR LOADING CLASS NAMES:", str(e))
+    print("❌ CLASS NAME ERROR:", str(e))
     raise e
 
 # =========================================================
-# TREATMENT DATABASE
+# TREATMENT INFO
 # =========================================================
 
 TREATMENT_INFO = {
@@ -104,6 +111,7 @@ TREATMENT_INFO = {
 # =========================================================
 
 def preprocess_image(image_bytes):
+
     img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
 
     img = img.resize((224, 224))
@@ -142,12 +150,12 @@ def home():
 
     return jsonify({
         "message": "Plant Disease Detection API is running",
-        "classes": len(class_names),
-        "status": "success"
+        "status": "success",
+        "classes": len(class_names)
     })
 
 # =========================================================
-# PREDICTION ROUTE
+# PREDICT ROUTE
 # =========================================================
 
 @app.route("/predict", methods=["POST"])
@@ -166,6 +174,7 @@ def predict():
         }), 400
 
     try:
+
         image_bytes = file.read()
 
         img_tensor = preprocess_image(image_bytes)
@@ -178,7 +187,7 @@ def predict():
 
         top_confidence = float(predictions[top_idx]) * 100
 
-        # Top 3 predictions
+        # TOP 3 PREDICTIONS
         top3_idx = np.argsort(predictions)[::-1][:3]
 
         top3 = []
@@ -189,7 +198,7 @@ def predict():
                 "confidence": round(float(predictions[i]) * 100, 2)
             })
 
-        # Format names
+        # FORMAT OUTPUT
         parts = top_class.split("___")
 
         plant_name = parts[0].replace("_", " ")
@@ -221,14 +230,14 @@ def predict():
         }), 500
 
 # =========================================================
-# MAIN
+# START SERVER
 # =========================================================
 
 if __name__ == "__main__":
 
     port = int(os.environ.get("PORT", 5000))
 
-    print(f"🚀 Starting server on port {port}")
+    print(f"\n🚀 Starting Flask server on port {port}\n")
 
     app.run(
         host="0.0.0.0",
