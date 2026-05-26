@@ -11,8 +11,10 @@ app = Flask(__name__)
 CORS(app)   # allows your HTML frontend to call this API
 
 # ── Load model once at startup ──────────────────────────
-MODEL_PATH      = "../model/plant_model.h5"
-CLASS_NAMES_PATH = "../model/class_names.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+MODEL_PATH = os.path.join(BASE_DIR, "..", "model", "plant_model.h5")
+CLASS_NAMES_PATH = os.path.join(BASE_DIR, "..", "model", "class_names.json")
 
 print("Loading model...")
 model = tf.keras.models.load_model(MODEL_PATH)
