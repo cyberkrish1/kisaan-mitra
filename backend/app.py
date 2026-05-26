@@ -27,7 +27,7 @@ CORS(app)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 MODEL_PATH = os.path.abspath(
-    os.path.join(BASE_DIR, "..", "model", "plant_model.keras")
+    os.path.join(BASE_DIR, "..", "model", "final_model.keras")
 )
 
 CLASS_NAMES_PATH = os.path.abspath(
